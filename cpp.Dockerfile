@@ -45,6 +45,17 @@ ENV DEBIAN_FRONTEND=
 FROM base AS dev
 
 ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y \
+  zsh \
+  bash-completion \
+  build-essential \
+  cmake \
+  gdb \
+  git \
+  vim \
+  neovim \
+  wget \
+  && rm -rf /var/lib/apt/lists/* 
 
 ARG USERNAME=cpp
 ARG USER_UID=1000
@@ -62,6 +73,16 @@ RUN groupadd --gid $USER_GID $USERNAME \
   && rm -rf /var/lib/apt/lists/* \
   && echo "source /usr/share/bash-completion/completions/git" >> /home/$USERNAME/.bashrc \
   && echo "if [ -f /opt/ros/${ROS_DISTRO}/setup.bash ]; then source /opt/ros/${ROS_DISTRO}/setup.bash; fi" >> /home/$USERNAME/.bashrc
+
+# Set user to non-root user
 USER $USERNAME
+
+# Create a development directory
+RUN mkdir -p ~/Dev
+
+# Install fzf
+RUN git clone https://github.com/junegunn/fzf.git ~/Dev/fzf \
+      && cd ~/Dev/fzf \
+      && ./install --all
 
 ENV DEBIAN_FRONTEND=
