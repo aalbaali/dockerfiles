@@ -46,6 +46,7 @@ FROM base AS dev
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
+  clangd \
   zsh \
   bash-completion \
   build-essential \
@@ -85,4 +86,26 @@ RUN git clone https://github.com/junegunn/fzf.git ~/Dev/fzf \
       && cd ~/Dev/fzf \
       && ./install --all
 
+# Clone workstation setup
+RUN git clone https://github.com/aalbaali/workstation_setup.git ~/Dev/workstation_setup \
+      && cd ~/Dev/workstation_setup \
+      && sudo ./scripts/install_packages.sh
+
+RUN cd ~/Dev/workstation_setup \
+      && rm ~/.bashrc \
+      && rm ~/.zshrc \
+      && ./scripts/post_install_setup.sh \
+          --zsh \
+          --bash \
+          --functions \
+          --git \
+          --nvim \
+          --nvim-setup \
+          --clang_format \
+          --gdb
+
+
 ENV DEBIAN_FRONTEND=
+
+CMD ["zsh"]
+

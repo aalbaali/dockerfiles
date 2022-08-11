@@ -16,8 +16,14 @@ docker run -it --rm cpp:dev bash
 ```
 where `--rm` removes the container once it exits (i.e., it makes it a temporary container).
 
-## Running with git ssh keys
-To run ssh with the same private key as the host, mount or copy the keys in the `.ssh` directory into the container.
-```bash
-docker run -it --rm -v ~/.ssh/id_ed25519:/root/.ssh/id_ed25519 cpp:dev bash
-```
+## List of useful flags and mounts
+| Mount                                         | Description                                                   |
+|-----------------------------------------------|---------------------------------------------------------------|
+| `~/.ssh/id_ed25519:/home/cpp/.ssh/id_ed25519` | SSH private key. Allows using SSH within the container        |
+| `~/.zsh_history:/home/cpp/.zsh_history`       | ZSH command history                                           |
+| `-e DISPLAY=$DISPLAY`                         | Set display                                                   |
+| `/tmp/.X11-unix:/tmp/.X11-unix`               | Forward X11 port                                              |
+| `--hostname hostname`                         | Set container host-name                                       |
+| `--network host`                              | Set network to host (useful when developing web applications) |
+
+
