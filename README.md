@@ -26,4 +26,12 @@ where `--rm` removes the container once it exits (i.e., it makes it a temporary 
 | `--hostname hostname`                         | Set container host-name                                       |
 | `--network host`                              | Set network to host (useful when developing web applications) |
 
-
+# Common issues
+## Ctrl+P not working properly
+The `<C-P>` is used by Docker to detach keys.
+To change the key, update the `"detachKeys"` in `~/.docker/config.json`.
+For example
+```bash
+    "detachKeys": "ctrl-z,z"
+```
+Check [this answer](https://stackoverflow.com/questions/20828657/docker-change-ctrlp-to-something-else) for more details.
