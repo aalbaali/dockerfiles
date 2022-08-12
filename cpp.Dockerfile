@@ -118,5 +118,19 @@ RUN cd ~/Dev/workstation_setup \
 
 ENV DEBIAN_FRONTEND=
 
-CMD ["zsh"]
+###########################################
+#  opencv layer
+###########################################
+from dev AS opencv
 
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN sudo apt-get update \
+  && sudo apt-get install -y \
+    libopencv-dev \
+    python3-opencv \
+  && sudo rm -rf /var/lib/apt/lists/* 
+
+ENV DEBIAN_FRONTEND=
+
+CMD ["zsh"]
