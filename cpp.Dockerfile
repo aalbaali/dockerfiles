@@ -35,28 +35,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     clang \
     cmake \
     make \
+    git \
   && rm -rf /var/lib/apt/lists/*
-
-ENV DEBIAN_FRONTEND=
-
-###########################################
-#  Develop image 
-###########################################
-FROM base AS dev
-
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y \
-  clangd \
-  zsh \
-  bash-completion \
-  build-essential \
-  cmake \
-  gdb \
-  git \
-  vim \
-  neovim \
-  wget \
-  && rm -rf /var/lib/apt/lists/* 
 
 ARG USERNAME=cpp
 ARG USER_UID=1000
@@ -80,6 +60,37 @@ USER $USERNAME
 
 # Create a development directory
 RUN mkdir -p ~/Dev
+
+# Install latest stable eigen release
+RUN git config --global http.sslverify false \
+    && git clone https://gitlab.com/libeigen/eigen.git ~/Dev/external/eigen \
+    && cd ~/Dev/external/eigen \
+    && mkdir build && cd build \
+    && cmake .. \
+    && sudo make install \
+    && git config --global http.sslverify false 
+
+ENV DEBIAN_FRONTEND=
+
+###########################################
+#  Develop image 
+###########################################
+FROM base AS dev
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN sudo apt-get update \
+  && sudo apt-get install -y \
+  clangd \
+  zsh \
+  bash-completion \
+  build-essential \
+  cmake \
+  gdb \
+  vim \
+  neovim \
+  wget \
+  python3-pip \
+  && sudo rm -rf /var/lib/apt/lists/* 
 
 # Install fzf
 RUN git clone https://github.com/junegunn/fzf.git ~/Dev/fzf \
