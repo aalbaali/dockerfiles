@@ -93,8 +93,8 @@ RUN sudo apt-get update \
   && sudo rm -rf /var/lib/apt/lists/* 
 
 # Install fzf
-RUN git clone https://github.com/junegunn/fzf.git ~/Dev/fzf \
-      && cd ~/Dev/fzf \
+RUN git clone https://github.com/junegunn/fzf.git ~/Dev/external/fzf \
+      && cd ~/Dev/external/fzf \
       && ./install --all
 
 # Clone workstation setup
