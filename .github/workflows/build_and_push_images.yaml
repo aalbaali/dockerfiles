@@ -28,5 +28,5 @@ jobs:
           context: .
           file: ./cpp.Dockerfile
           target: dev
-          tags:  ${{ secrets.DOCKER_HUB_USERNAME }}/cpp:dev
+          tags:  ${{ secrets.DOCKERHUB_USERNAME }}/cpp:dev
           push: true
