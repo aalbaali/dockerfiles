@@ -1,15 +1,22 @@
+version: '3.5'
 services:
   base:
     image: aalbaali/cpp:base
     build:
       context: .
       dockerfile: cpp.Dockerfile
+      target: base
+      args:
+        USERNAME: base
 
   dev:
     image: aalbaali/cpp:dev
     build:
       context: .
       dockerfile: cpp.Dockerfile
+      target: dev
+      args:
+        USERNAME: base
     depends_on:
       - base
 
@@ -18,5 +25,8 @@ services:
     build:
       context: .
       dockerfile: cpp.Dockerfile
+      target: opencv
+      args:
+        USERNAME: base
     depends_on:
       - dev
