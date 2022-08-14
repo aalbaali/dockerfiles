@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV LANG en_US.UTF-8
 
 # Install timezone
-RUN ln -fs /usr/share/zoneinfo/UTC /etc/localtime \
+RUN ln -fs /usr/share/zoneinfo/EST /etc/localtime \
   && export DEBIAN_FRONTEND=noninteractive \
   && apt-get update \
   && apt-get install -y --no-install-recommends tzdata \
@@ -27,6 +27,8 @@ RUN ln -fs /usr/share/zoneinfo/UTC /etc/localtime \
 
 # Install C++ compilers
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    dialog \
+    ssh \
     apt-utils \
     sudo \
     build-essential \
@@ -77,9 +79,13 @@ ENV DEBIAN_FRONTEND=
 ###########################################
 FROM base AS dev
 
+ARG USERNAME
+ARG USER_UID
+ARG USER_GID
+
 ENV DEBIAN_FRONTEND=noninteractive
 RUN sudo apt-get update \
-  && sudo apt-get install -y \
+  && sudo apt-get install -y --no-install-recommends \
   clangd \
   zsh \
   bash-completion \
@@ -100,11 +106,12 @@ RUN git clone https://github.com/junegunn/fzf.git ~/Dev/external/fzf \
 # Clone workstation setup
 RUN git clone https://github.com/aalbaali/workstation_setup.git ~/Dev/workstation_setup \
       && cd ~/Dev/workstation_setup \
-      && sudo ./scripts/install_packages.sh
+      && ./scripts/install_packages.sh
 
 RUN cd ~/Dev/workstation_setup \
-      && rm ~/.bashrc \
-      && rm ~/.zshrc \
+      && rm ~/.bashrc >/dev/null \
+      && rm ~/.zshrc >/dev/null \
+      && rm ~/.gitconfig >/dev/null \
       && ./scripts/post_install_setup.sh \
           --zsh \
           --bash \
@@ -113,15 +120,21 @@ RUN cd ~/Dev/workstation_setup \
           --nvim \
           --nvim-setup \
           --clang_format \
-          --gdb
-
+          --gdb \
+          --tmux \
+          --tmux-setup
 
 ENV DEBIAN_FRONTEND=
 
+CMD ["zsh"]
 ###########################################
 #  opencv layer
 ###########################################
 from dev AS opencv
+
+ARG USERNAME
+ARG USER_UID
+ARG USER_GID
 
 ENV DEBIAN_FRONTEND=noninteractive
 
