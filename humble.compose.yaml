@@ -1,0 +1,69 @@
+services:
+  base:
+    image: aalbaali/humble:base
+    build:
+      context: .
+      dockerfile: humble.Dockerfile
+      target: base
+      args:
+        USERNAME: humble
+
+  dev:
+    image: aalbaali/humble:dev
+    build:
+      context: .
+      dockerfile: humble.Dockerfile
+      target: dev
+      args:
+        USERNAME: humble
+        WORKSPACE: ros_ws
+    depends_on:
+      - base
+
+  opencv:
+    image: aalbaali/humble:opencv
+    build:
+      context: .
+      dockerfile: humble.Dockerfile
+      target: opencv
+      args:
+        USERNAME: humble
+        WORKSPACE: ros_ws
+    depends_on:
+      - dev
+
+  full:
+    image: aalbaali/humble:full
+    build:
+      context: .
+      dockerfile: humble.Dockerfile
+      target: full
+      args:
+        USERNAME: humble
+        WORKSPACE: ros_ws
+    depends_on:
+      - opencv
+
+  gazebo:
+    image: aalbaali/humble:gazebo
+    build:
+      context: .
+      dockerfile: humble.Dockerfile
+      target: gazebo
+      args:
+        USERNAME: humble
+        WORKSPACE: ros_ws
+    depends_on:
+      - full
+
+  gazebo-nvidia:
+    image: aalbaali/humble:gazebo-nvidia
+    build:
+      context: .
+      dockerfile: humble.Dockerfile
+      target: gazebo-nvidia
+      args:
+        USERNAME: humble
+        WORKSPACE: ros_ws
+    depends_on:
+      - gazebo
