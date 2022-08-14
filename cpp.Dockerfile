@@ -124,6 +124,9 @@ RUN cd ~/Dev/workstation_setup \
           --tmux \
           --tmux-setup
 
+# Run zsh to initialize
+USER $USERNAME
+
 ENV DEBIAN_FRONTEND=
 
 CMD ["zsh"]
