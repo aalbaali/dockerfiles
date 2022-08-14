@@ -1,0 +1,22 @@
+services:
+  base:
+    image: aalbaali/cpp:base
+    build:
+      context: .
+      dockerfile: cpp.Dockerfile
+
+  dev:
+    image: aalbaali/cpp:dev
+    build:
+      context: .
+      dockerfile: cpp.Dockerfile
+    depends_on:
+      - base
+
+  opencv:
+    image: aalbaali/cpp:opencv
+    build:
+      context: .
+      dockerfile: cpp.Dockerfile
+    depends_on:
+      - dev

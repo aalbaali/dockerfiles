@@ -16,6 +16,13 @@ and `TARGET`, respectively.
 To use a specific username in the build, use `--build-arg USERNAME=username`, which replaces the
 `USERNAME` argument in the Dockerfile.
 
+## Using docker-compose
+It's possible to build all images using docker compose by running
+```bash
+docker-compose -f cpp.compose.yaml build
+```
+where `cpp.compose.yaml` is the `docker-compose` file.
+
 # Running containers
 To run a container, build it using the commands above and then run
 ```bash
