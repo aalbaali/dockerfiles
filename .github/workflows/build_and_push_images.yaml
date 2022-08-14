@@ -7,6 +7,9 @@ on:
 
 jobs:
   docker:
+    strategy:
+      matrix:
+        target: [base, dev, opencv]
     runs-on: ubuntu-latest
     steps:
       -
@@ -31,5 +34,5 @@ jobs:
           context: .
           file: ./cpp.Dockerfile
           target: dev
-          tags:  ${{ secrets.DOCKERHUB_USERNAME }}/cpp:dev
+          tags:  ${{ secrets.DOCKERHUB_USERNAME }}/cpp:${{ matrix.target }}
           push: true
