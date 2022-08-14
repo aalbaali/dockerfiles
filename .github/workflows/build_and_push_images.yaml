@@ -6,10 +6,19 @@ on:
       - 'master'
 
 jobs:
-  docker:
+  docker-images:
     strategy:
       matrix:
+        repo: [cpp, humble]
         target: [base, dev, opencv]
+        include:
+          - repo: humble
+            target: full
+          - repo: humble
+            target: gazebo
+          - repo: humble
+            target: gazebo-nvidia
+        
     runs-on: ubuntu-latest
     steps:
       -
@@ -32,7 +41,8 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./cpp.Dockerfile
+          file: ./${{ matrix.repo }}.Dockerfile
           target: dev
-          tags:  ${{ secrets.DOCKERHUB_USERNAME }}/cpp:${{ matrix.target }}
+          tags:  ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.repo }}:${{ matrix.target }}
           push: true
+
