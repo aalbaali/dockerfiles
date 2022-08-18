@@ -145,6 +145,8 @@ RUN sudo apt-get update \
   && sudo apt-get install -y \
     libopencv-dev \
     python3-opencv \
+    libcanberra-gtk-module \
+    libcanberra-gtk3-module \
   && sudo rm -rf /var/lib/apt/lists/* 
 
 ENV DEBIAN_FRONTEND=
