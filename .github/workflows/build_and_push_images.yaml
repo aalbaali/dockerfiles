@@ -19,6 +19,10 @@ jobs:
           - repo: cpp
             target: opencv
           - repo: humble
+            target: opencv
+          - repo: cpp
+            target: opencv
+          - repo: humble
             target: full
           - repo: humble
             target: gazebo
