@@ -28,6 +28,10 @@ RUN ln -fs /usr/share/zoneinfo/EST /etc/localtime \
 # Install texlive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     texlive \
+    latexmk \
+    git \
+    make \
+    ssh \
   && rm -rf /var/lib/apt/lists/*
 
 ARG USERNAME=latex
@@ -67,9 +71,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN sudo apt-get update \
   && sudo apt-get install -y --no-install-recommends \
   zsh \
-  git \
   build-essential \
-  make \
   gdb \
   neovim \
   wget \
@@ -86,26 +88,22 @@ RUN git clone https://github.com/aalbaali/workstation_setup.git ~/Dev/workstatio
       && cd ~/Dev/workstation_setup \
       && ./scripts/install_packages.sh
 
+ENV TERM=xterm-256color
 RUN cd ~/Dev/workstation_setup \
-      && rm ~/.bashrc >/dev/null \
-      && rm ~/.zshrc >/dev/null \
-      && rm ~/.gitconfig >/dev/null \
-      && ./scripts/post_install_setup.sh \
-          --zsh \
-          --bash \
-          --functions \
-          --git \
-          --nvim \
-          --nvim-setup \
-          --clang_format \
-          --gdb \
-          --tmux \
-          --tmux-setup
+      && git pull \
+      && rm -f ~/.bashrc \
+      && rm -f ~/.zshrc \
+      && rm -f ~/.gitconfig \
+      && ./scripts/post_install_setup.sh --zsh \
+      && ./scripts/post_install_setup.sh --latex \
+      && ./scripts/post_install_setup.sh --functions \
+      && ./scripts/post_install_setup.sh --bash \
+      && ./scripts/post_install_setup.sh --git \
+      && ./scripts/post_install_setup.sh --tmux --tmux-setup \
+      && ./scripts/post_install_setup.sh  --nvim --nvim-setup
 
-# Run zsh to initialize
+
 USER $USERNAME
-RUN /bin/zsh /home/$USERNAME/.zshrc
 
-ENV DEBIAN_FRONTEND=
 
 CMD ["zsh"]
