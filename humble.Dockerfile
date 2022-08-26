@@ -112,8 +112,9 @@ RUN groupadd --gid $USER_GID $USERNAME \
 # Set user to non-root user
 USER $USERNAME
 
+ENV ROS_WORKSPACE="~/$WORKSPACE"
 # Create workspace directory
-RUN mkdir -p ~/$WORKSPACE/
+RUN mkdir -p $ROS_WORKSPACE
 
 # Create a development directory
 RUN mkdir -p ~/Dev
