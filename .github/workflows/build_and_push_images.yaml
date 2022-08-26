@@ -14,7 +14,7 @@ jobs:
         repo: [cpp, humble, latex]
         target: [base, dev]
         include:
-          - repo: humble:
+          - repo: humble
             target: opencv
           - repo: cpp
             target: opencv
