@@ -4,14 +4,20 @@ on:
   push:
     branches:
       - 'master'
+  pull_request:
+    - opened
 
 jobs:
   docker-images:
     strategy:
       matrix:
-        repo: [cpp, humble]
-        target: [base, dev, opencv]
+        repo: [cpp, humble, latex]
+        target: [base, dev]
         include:
+          - repo: humble:
+            target: opencv
+          - repo: cpp
+            target: opencv
           - repo: humble
             target: full
           - repo: humble
@@ -45,4 +51,3 @@ jobs:
           target: dev
           tags:  ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.repo }}:${{ matrix.target }}
           push: true
-
