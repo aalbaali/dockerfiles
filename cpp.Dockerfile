@@ -109,9 +109,9 @@ RUN git clone https://github.com/aalbaali/workstation_setup.git ~/Dev/workstatio
       && ./scripts/install_packages.sh
 
 RUN cd ~/Dev/workstation_setup \
-      && rm ~/.bashrc >/dev/null \
-      && rm ~/.zshrc >/dev/null \
-      && rm ~/.gitconfig >/dev/null \
+      && rm -f ~/.bashrc \
+      && rm -f ~/.zshrc \
+      && rm -f ~/.gitconfig \
       && ./scripts/post_install_setup.sh \
           --zsh \
           --bash \
