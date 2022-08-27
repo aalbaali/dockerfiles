@@ -50,9 +50,6 @@ RUN groupadd --gid $USER_GID $USERNAME \
   && rm -rf /var/lib/apt/lists/* \
   && echo "source /usr/share/bash-completion/completions/git" >> /home/$USERNAME/.bashrc
 
-# Set user to non-root user
-USER $USERNAME
-
 # Create a development directory
 RUN mkdir -p ~/Dev
 
@@ -77,8 +74,6 @@ RUN sudo apt-get update \
      wget         \
      texlive-full \
   && sudo rm -rf /var/lib/apt/lists/* 
-
-USER $USERNAME
 
 ENV DEBIAN_FRONTEND=
 
@@ -127,9 +122,6 @@ RUN cd ~/Dev/workstation_setup \
       && ./scripts/post_install_setup.sh --tmux --tmux-setup \
       && ./scripts/post_install_setup.sh  --nvim --nvim-setup \
       && ./scripts/post_install_setup.sh  --vim --vim-setup
-
-
-USER $USERNAME
 
 ENV DEBIAN_FRONTEND=
 
