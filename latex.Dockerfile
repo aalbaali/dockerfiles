@@ -77,8 +77,6 @@ RUN sudo apt-get update \
 
 ENV DEBIAN_FRONTEND=
 
-CMD ["zsh"]
-
 ###########################################
 #  Develop image 
 ###########################################
@@ -120,8 +118,7 @@ RUN cd ~/Dev/workstation_setup \
       && ./scripts/post_install_setup.sh --bash \
       && ./scripts/post_install_setup.sh --git \
       && ./scripts/post_install_setup.sh --tmux --tmux-setup \
-      && ./scripts/post_install_setup.sh  --nvim --nvim-setup \
-      && ./scripts/post_install_setup.sh  --vim --vim-setup
+      && ./scripts/post_install_setup.sh  --nvim --nvim-setup
 
 ENV DEBIAN_FRONTEND=
 
