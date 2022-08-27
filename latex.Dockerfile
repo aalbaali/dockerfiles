@@ -126,5 +126,3 @@ RUN cd ~/Dev/workstation_setup \
 ENV DEBIAN_FRONTEND=
 
 CMD ["zsh"]
-
-CMD ["zsh"]
