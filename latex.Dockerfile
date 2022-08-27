@@ -80,6 +80,7 @@ RUN sudo apt-get update \
 
 USER $USERNAME
 
+ENV DEBIAN_FRONTEND=
 
 CMD ["zsh"]
 
@@ -130,6 +131,7 @@ RUN cd ~/Dev/workstation_setup \
 
 USER $USERNAME
 
+ENV DEBIAN_FRONTEND=
 
 CMD ["zsh"]
 
