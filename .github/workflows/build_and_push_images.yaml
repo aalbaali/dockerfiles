@@ -28,6 +28,8 @@ jobs:
             target: gazebo
           - repo: humble
             target: gazebo-nvidia
+          - repo: latex
+            target: full
         
     runs-on: ubuntu-latest
     steps:
