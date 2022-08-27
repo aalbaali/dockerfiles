@@ -126,7 +126,7 @@ RUN cd ~/Dev/workstation_setup \
       && ./scripts/post_install_setup.sh --git \
       && ./scripts/post_install_setup.sh --tmux --tmux-setup \
       && ./scripts/post_install_setup.sh  --nvim --nvim-setup \
-      && ./scripts/post_install_setup.sh  --vim
+      && ./scripts/post_install_setup.sh  --vim --vim-setup
 
 
 USER $USERNAME
