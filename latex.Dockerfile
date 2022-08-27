@@ -119,16 +119,14 @@ RUN cd ~/Dev/workstation_setup \
       && rm -f ~/.bashrc \
       && rm -f ~/.zshrc \
       && rm -f ~/.gitconfig \
-      && ./scripts/post_install_setup.sh \
-          --zsh \
-          --zsh-setup \
-          --latex \
-          --functions \
-          --bash \
-          --git \
-          --tmux --tmux-setup \
-          --nvim --nvim-setup \
-          --vim --vim-setup
+      && ./scripts/post_install_setup.sh --zsh \
+      && ./scripts/post_install_setup.sh --latex \
+      && ./scripts/post_install_setup.sh --functions \
+      && ./scripts/post_install_setup.sh --bash \
+      && ./scripts/post_install_setup.sh --git \
+      && ./scripts/post_install_setup.sh --tmux --tmux-setup \
+      && ./scripts/post_install_setup.sh  --nvim --nvim-setup \
+      && ./scripts/post_install_setup.sh  --vim --vim-setup
 
 
 USER $USERNAME
@@ -136,20 +134,5 @@ USER $USERNAME
 ENV DEBIAN_FRONTEND=
 
 CMD ["zsh"]
-
-###########################################
-#  Custom tex packages
-###########################################
-from dev AS custom
-
-ARG USERNAME
-ARG USER_UID
-ARG USER_GID
-
-ENV DEBIAN_FRONTEND=noninteractive
-
-#RUN cd ~/Dev/workstation_setup \
-#    && ./scripts
-#ENV DEBIAN_FRONTEND=
 
 CMD ["zsh"]
