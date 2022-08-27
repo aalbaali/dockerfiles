@@ -59,9 +59,34 @@ RUN mkdir -p ~/Dev
 ENV DEBIAN_FRONTEND=
 
 ###########################################
+#  Full latexmk image
+###########################################
+FROM base AS full
+
+ARG USERNAME
+ARG USER_UID
+ARG USER_GID
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN sudo apt-get update \
+  && sudo apt-get install -y --no-install-recommends \
+     zathura      \
+     okular       \
+     mupdf        \
+     xdotool      \
+     wget         \
+     texlive-full \
+  && sudo rm -rf /var/lib/apt/lists/* 
+
+USER $USERNAME
+
+
+CMD ["zsh"]
+
+###########################################
 #  Develop image 
 ###########################################
-FROM base AS dev
+FROM full AS dev
 
 ARG USERNAME
 ARG USER_UID
@@ -74,7 +99,6 @@ RUN sudo apt-get update \
   build-essential \
   gdb \
   neovim \
-  wget \
   python3-pip \
   && sudo rm -rf /var/lib/apt/lists/* 
 
