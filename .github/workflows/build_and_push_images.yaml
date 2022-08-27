@@ -54,6 +54,6 @@ jobs:
         with:
           context: .
           file: ./${{ matrix.repo }}.Dockerfile
-          target: dev
+          target: ${{ matrix.target }}
           tags:  ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.repo }}:${{ matrix.target }}
           push: true
