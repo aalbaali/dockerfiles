@@ -114,6 +114,7 @@ RUN cd ~/Dev/workstation_setup \
       && rm -f ~/.gitconfig \
       && ./scripts/post_install_setup.sh \
           --zsh \
+          --zsh-setup \
           --bash \
           --functions \
           --git \
