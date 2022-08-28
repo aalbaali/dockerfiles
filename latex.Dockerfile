@@ -25,6 +25,10 @@ RUN ln -fs /usr/share/zoneinfo/EST /etc/localtime \
   && dpkg-reconfigure --frontend noninteractive tzdata \
   && rm -rf /var/lib/apt/lists/*
 
+# Set time zone
+ENV TZ="Canada/Eastern"
+RUN date
+
 # Install texlive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     texlive \
@@ -34,6 +38,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ssh \
   && rm -rf /var/lib/apt/lists/*
 
+# Set user name
 ARG USERNAME=latex
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID

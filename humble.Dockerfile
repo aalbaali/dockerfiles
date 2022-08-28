@@ -26,6 +26,10 @@ RUN ln -fs /usr/share/zoneinfo/EST /etc/localtime \
   && dpkg-reconfigure --frontend noninteractive tzdata \
   && rm -rf /var/lib/apt/lists/*
 
+# Set timezone
+ENV TZ="Canada/Eastern"
+RUN date
+
 # Install ROS2
 RUN apt-get update && apt-get install -y \
     curl \
