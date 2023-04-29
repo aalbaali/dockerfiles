@@ -1,12 +1,12 @@
 ##############################################
-# Created from template ros2.dockerfile.jinja
+# Created from template ros.dockerfile.jinja
 # And from althackst/dockerfiles
 ##############################################
 
 ###########################################
 # Base image 
 ###########################################
-FROM ubuntu:22.04 AS base
+FROM ubuntu:20.04 AS base
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -30,29 +30,26 @@ RUN ln -fs /usr/share/zoneinfo/EST /etc/localtime \
 ENV TZ="Canada/Eastern"
 RUN date
 
-# Install ROS2
+# Install ROS
 RUN apt-get update && apt-get install -y \
     curl \
+    dirmngr \
     gnupg2 \
     lsb-release \
     sudo \
-  && curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg \
-  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null \
+  && sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list' \
+  && curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add - \
   && apt-get update && apt-get install -y \
-    ros-humble-ros-base \
-    python3-argcomplete \
+    ros-noetic-ros-base \
   && rm -rf /var/lib/apt/lists/*
 
-ENV ROS_DISTRO=humble
-ENV AMENT_PREFIX_PATH=/opt/ros/humble
-ENV COLCON_PREFIX_PATH=/opt/ros/humble
-ENV LD_LIBRARY_PATH=/opt/ros/humble/lib
-ENV PATH=/opt/ros/humble/bin:$PATH
-ENV PYTHONPATH=/opt/ros/humble/lib/python3.10/site-packages
+# Setup environment
+ENV LD_LIBRARY_PATH=/opt/ros/noetic/lib
+ENV ROS_DISTRO=noetic
 ENV ROS_PYTHON_VERSION=3
-ENV ROS_VERSION=2
-ENV DEBIAN_FRONTEND=
-
+ENV ROS_VERSION=1
+ENV PATH=/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV PYTHONPATH=/opt/ros/noetic/lib/python3/dist-packages
 ###########################################
 #  Develop image 
 ###########################################
@@ -86,10 +83,6 @@ RUN apt-get update && apt-get install -y \
     neovim \
     python3-pip \
     # Install ros distro testing packages
-    ros-humble-ament-lint \
-    ros-humble-launch-testing \
-    ros-humble-launch-testing-ament-cmake \
-    ros-humble-launch-testing-ros \
     python3-autopep8 \
   && rm -rf /var/lib/apt/lists/* \
   && rosdep init || echo "rosdep already initialized" \
@@ -164,7 +157,6 @@ RUN cd ~/Dev/workstation_setup \
 RUN echo "if [ -f /opt/ros/${ROS_DISTRO}/setup.zsh ]; then source /opt/ros/${ROS_DISTRO}/setup.zsh; fi" >> /home/$USERNAME/.zshrc
 
 ENV DEBIAN_FRONTEND=
-ENV AMENT_CPPCHECK_ALLOW_SLOW_VERSIONS=1
 
 CMD ["zsh"]
 
@@ -205,7 +197,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Install the full release
 RUN sudo apt-get update \
   && sudo apt-get install -y \
-    ros-humble-desktop \
+    ros-${ROS_DISTRO}-desktop \
   && sudo rm -rf /var/lib/apt/lists/*
 ENV DEBIAN_FRONTEND=
 
@@ -227,7 +219,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Install gazebo
 RUN sudo apt-get update \
   && sudo apt-get install -y \
-    ros-humble-gazebo* \
+    ros-${ROS_DISTRO}-gazebo* \
   && sudo rm -rf /var/lib/apt/lists/*
 ENV DEBIAN_FRONTEND=
 

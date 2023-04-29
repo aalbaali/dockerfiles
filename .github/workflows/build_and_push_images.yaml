@@ -11,17 +11,21 @@ jobs:
   docker-images:
     strategy:
       matrix:
-        repo: [cpp, humble, latex]
+        repo: [cpp, noetic, humble, latex]
         target: [base, dev]
         include:
-          - repo: humble
-            target: opencv
-          - repo: cpp
+          - repo: noetic
             target: opencv
           - repo: humble
             target: opencv
           - repo: cpp
             target: opencv
+          - repo: noetic
+            target: full
+          - repo: noetic
+            target: gazebo
+          - repo: noetic
+            target: gazebo-nvidia
           - repo: humble
             target: full
           - repo: humble
