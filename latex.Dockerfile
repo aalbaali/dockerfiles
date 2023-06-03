@@ -106,24 +106,25 @@ RUN git clone https://github.com/junegunn/fzf.git ~/Dev/external/fzf \
       && cd ~/Dev/external/fzf \
       && ./install --all
 
-# Clone workstation setup
+# Clone custom workstation setup and setup packages
 RUN git clone https://github.com/aalbaali/workstation_setup.git ~/Dev/workstation_setup \
       && cd ~/Dev/workstation_setup \
-      && ./scripts/install_packages.sh
-
-ENV TERM=xterm-256color
-RUN cd ~/Dev/workstation_setup \
-      && git pull \
-      && rm -f ~/.bashrc \
-      && rm -f ~/.zshrc \
-      && rm -f ~/.gitconfig \
-      && ./scripts/post_install_setup.sh --zsh \
-      && ./scripts/post_install_setup.sh --latex \
-      && ./scripts/post_install_setup.sh --functions \
-      && ./scripts/post_install_setup.sh --bash \
-      && ./scripts/post_install_setup.sh --git \
-      && ./scripts/post_install_setup.sh --tmux --tmux-setup \
-      && ./scripts/post_install_setup.sh  --nvim --nvim-setup
+      && sudo ./scripts/install_packages.sh \
+      && rm ~/.bashrc \
+      && rm ~/.zshrc \
+      && if [ -f ~/.gitconfig ]; then rm ~/.gitconfig; fi \
+      && ./scripts/post_install_setup.sh \
+          --zsh \
+          --zsh-setup \
+          --bash \
+          --functions \
+          --git \
+          --nvim \
+          --nvim-setup \
+          --clang_format \
+          --gdb \
+          --tmux \
+          --tmux-setup
 
 ENV DEBIAN_FRONTEND=
 
