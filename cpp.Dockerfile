@@ -97,7 +97,6 @@ RUN sudo apt-get update \
   cmake \
   gdb \
   vim \
-  neovim \
   wget \
   python3-pip \
   && sudo rm -rf /var/lib/apt/lists/* 
@@ -133,6 +132,7 @@ USER $USERNAME
 ENV DEBIAN_FRONTEND=
 
 CMD ["zsh"]
+
 ###########################################
 #  opencv layer
 ###########################################
