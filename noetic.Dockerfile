@@ -43,23 +43,9 @@ RUN apt-get update && apt-get install -y \
     ros-noetic-ros-base \
   && rm -rf /var/lib/apt/lists/*
 
-# Setup environment
-ENV LD_LIBRARY_PATH=/opt/ros/noetic/lib
-ENV ROS_DISTRO=noetic
-ENV ROS_PYTHON_VERSION=3
-ENV ROS_VERSION=1
-ENV PATH=/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-ENV PYTHONPATH=/opt/ros/noetic/lib/python3/dist-packages
-###########################################
-#  Develop image 
-###########################################
-FROM base AS dev
-
-ENV DEBIAN_FRONTEND=noninteractive
+# Install ros tools
 RUN apt-get update && apt-get install -y \
-    dialog \
     apt-utils \
-    sudo \
     build-essential \
     gcc \
     g++ \
@@ -67,9 +53,9 @@ RUN apt-get update && apt-get install -y \
     make \
     bash-completion \
     cmake \
-    gdb \
     git \
     pylint \
+    python3-catkin-tools \
     python3-argcomplete \
     python3-colcon-common-extensions \
     python3-pip \
@@ -79,21 +65,52 @@ RUN apt-get update && apt-get install -y \
     ros-sensor-msgs \
     wget \
     clangd \
+    python3-pip \
+    python3-autopep8
+
+# Setup environment
+ENV LD_LIBRARY_PATH=/opt/ros/noetic/lib
+ENV ROS_DISTRO=noetic
+ENV ROS_PYTHON_VERSION=3
+ENV ROS_VERSION=1
+ENV PATH=/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV PYTHONPATH=/opt/ros/noetic/lib/python3/dist-packages
+
+ARG USERNAME=ros
+ARG WORKSPACE=ros_ws
+
+# Create workspace directory
+RUN mkdir -p /home/$USERNAME/$WORKSPACE/
+
+# Initialize, update, and install rosdep
+RUN cd /home/$USERNAME/$WORKSPACE \
+    && rosdep init \
+    && rosdep update
+
+# Initialize catkin workspace
+RUN cd /home/$USERNAME/$WORKSPACE \
+    && catkin config --merge-devel \
+    && catkin init
+
+###########################################
+#  Develop image 
+###########################################
+FROM base AS dev
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y \
+    dialog \
+    gdb \
     zsh \
     neovim \
-    python3-pip \
     # Install ros distro testing packages
-    python3-autopep8 \
   && rm -rf /var/lib/apt/lists/* \
   && rosdep init || echo "rosdep already initialized" \
   # Update pydocstyle
   && pip install --upgrade pydocstyle
 
-ARG USERNAME=ros
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
-
-ARG WORKSPACE=ros_ws
 
 # Create a non-root user
 RUN groupadd --gid $USER_GID $USERNAME \
@@ -107,12 +124,6 @@ RUN groupadd --gid $USER_GID $USERNAME \
   && rm -rf /var/lib/apt/lists/* \
   && echo "source /usr/share/bash-completion/completions/git" >> /home/$USERNAME/.bashrc \
   && echo "if [ -f /opt/ros/${ROS_DISTRO}/setup.bash ]; then source /opt/ros/${ROS_DISTRO}/setup.bash; fi" >> /home/$USERNAME/.bashrc
-
-# Set user to non-root user
-USER $USERNAME
-
-# Create workspace directory
-RUN mkdir -p ~/$WORKSPACE/
 
 # Create a development directory
 RUN mkdir -p ~/Dev
@@ -132,8 +143,8 @@ RUN git clone https://github.com/junegunn/fzf.git ~/Dev/external/fzf \
       && ./install --all
 
 # Clone custom workstation setup and setup packages
-RUN git clone https://github.com/aalbaali/workstation_setup.git ~/Dev/workstation_setup \
-      && cd ~/Dev/workstation_setup \
+RUN git clone https://github.com/aalbaali/workstation_setup.git ~/Dev/workstation_setup -b nvchad \
+      && cd ~/Dev/workstation_setup && echo 'an' \
       && sudo ./scripts/install_packages.sh \
       && rm ~/.bashrc \
       && rm ~/.zshrc \
