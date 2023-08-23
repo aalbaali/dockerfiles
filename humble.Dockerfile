@@ -139,13 +139,12 @@ RUN git clone https://github.com/junegunn/fzf.git ~/Dev/external/fzf \
       && ./install --all
 
 # Clone custom workstation setup and setup packages
-RUN git clone https://github.com/aalbaali/workstation_setup.git ~/Dev/workstation_setup -b nvchad \
-      && cd ~/Dev/workstation_setup \
-      && sudo ./scripts/install_packages.sh \
-      && rm ~/.bashrc \
-      && rm ~/.zshrc \
-      && if [ -f ~/.gitconfig ]; then rm ~/.gitconfig; fi \
-      && ./scripts/post_install_setup.sh \
+RUN git clone https://github.com/aalbaali/workstation_setup.git ~/Dev/workstation_setup -b nvchad
+RUN cd ~/Dev/workstation_setup \
+      && sudo ./scripts/install_packages.sh
+RUN cd ~/Dev/workstation_setup \
+      && rm -f ~/.bashrc ~/.zshrc ~/.gitconfig \
+      && bash ./scripts/post_install_setup.sh \
           --zsh \
           --zsh-setup \
           --bash \
