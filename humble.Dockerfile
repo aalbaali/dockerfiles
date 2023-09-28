@@ -163,6 +163,22 @@ RUN echo "if [ -f /opt/ros/${ROS_DISTRO}/setup.zsh ]; then source /opt/ros/${ROS
 ENV DEBIAN_FRONTEND=
 ENV AMENT_CPPCHECK_ALLOW_SLOW_VERSIONS=1
 
+# Install zplug
+RUN export ZPLUG_HOME=~/.zplug \
+    export ZSH=~/.oh-my-zsh \
+    if [[ ! -d $ZPLUG_HOME ]];then \
+        git clone https://github.com/b4b4r07/zplug $ZPLUG_HOME \
+    fi \
+    source $ZPLUG_HOME/init.zsh \
+    eval "$(starship init zsh)" \
+    zplug "zsh-users/zsh-autosuggestions", as:plugin \
+    zplug "zsh-users/zsh-syntax-highlighting", as:plugin \
+    zplug "lib/history", as:plugin, from:oh-my-zsh \
+    if ! zplug check --verbose; then \
+      zplug install \
+    fi \
+    zplug load \
+
 CMD ["zsh"]
 
 ###########################################
