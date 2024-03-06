@@ -1,4 +1,4 @@
-##############################################
+##############################################M
 # Created from template ros.dockerfile.jinja
 # And from althackst/dockerfiles
 ##############################################
@@ -126,29 +126,29 @@ RUN groupadd --gid $USER_GID $USERNAME \
   && echo "if [ -f /opt/ros/${ROS_DISTRO}/setup.bash ]; then source /opt/ros/${ROS_DISTRO}/setup.bash; fi" >> /home/$USERNAME/.bashrc
 
 # Create a development directory
-RUN mkdir -p ~/Dev
+RUN mkdir -p /home/$USERNAME/Dev
 
 # Install latest stable eigen release
 RUN git config --global http.sslverify false \
-    && git clone https://gitlab.com/libeigen/eigen.git ~/Dev/external/eigen \
-    && cd ~/Dev/external/eigen \
+    && git clone https://gitlab.com/libeigen/eigen.git /home/$USERNAME/Dev/external/eigen \
+    && cd /home/$USERNAME/Dev/external/eigen \
     && mkdir build && cd build \
     && cmake .. \
     && sudo make install \
     && git config --global http.sslverify false 
 
 # Install fzf
-RUN git clone https://github.com/junegunn/fzf.git ~/Dev/external/fzf \
-      && cd ~/Dev/external/fzf \
+RUN git clone https://github.com/junegunn/fzf.git /home/$USERNAME/Dev/external/fzf \
+      && cd /home/$USERNAME/Dev/external/fzf \
       && ./install --all
 
 # Clone custom workstation setup and setup packages
-RUN git clone https://github.com/aalbaali/workstation_setup.git ~/Dev/workstation_setup -b nvchad \
-      && cd ~/Dev/workstation_setup && echo 'an' \
+RUN git clone https://github.com/aalbaali/workstation_setup.git /home/$USERNAME/Dev/workstation_setup -b nvchad \
+      && cd /home/$USERNAME/Dev/workstation_setup && \
       && sudo ./scripts/install_packages.sh \
-      && rm ~/.bashrc \
-      && rm ~/.zshrc \
-      && if [ -f ~/.gitconfig ]; then rm ~/.gitconfig; fi \
+      && rm /home/$USERNAME/.bashrc \
+      && rm /home/$USERNAME/.zshrc \
+      && if [ -f /home/$USERNAME/.gitconfig ]; then rm /home/$USERNAME/.gitconfig; fi \
       && ./scripts/post_install_setup.sh \
           --zsh \
           --zsh-setup \
