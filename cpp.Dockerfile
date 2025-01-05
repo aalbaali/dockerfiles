@@ -118,7 +118,7 @@ CMD ["zsh"]
 ###########################################
 #  opencv layer
 ###########################################
-from dev AS opencv
+FROM dev AS opencv
 
 ARG USERNAME
 ARG USER_UID
