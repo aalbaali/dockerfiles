@@ -7,7 +7,18 @@
 ###########################################
 FROM ubuntu:22.04 AS base
 
-ENV DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Set timezone
+ENV TZ="America/New_York"
+
+# Install timezone
+RUN export DEBIAN_FRONTEND=noninteractive \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends tzdata \
+ && dpkg-reconfigure --frontend noninteractive tzdata \
+ && rm -rf /var/lib/apt/lists/* \
+ && ln -fs /usr/share/zoneinfo/EST /etc/localtime 
 
 # Install language
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -16,18 +27,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 \
   && rm -rf /var/lib/apt/lists/*
 ENV LANG en_US.UTF-8
-
-# Install timezone
-RUN ln -fs /usr/share/zoneinfo/EST /etc/localtime \
-  && export DEBIAN_FRONTEND=noninteractive \
-  && apt-get update \
-  && apt-get install -y --no-install-recommends tzdata \
-  && dpkg-reconfigure --frontend noninteractive tzdata \
-  && rm -rf /var/lib/apt/lists/*
-
-# Set timezone
-ENV TZ="Canada/Eastern"
-RUN date
 
 # Install C++ compilers
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -44,8 +43,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
   && rm -rf /var/lib/apt/lists/*
 
-ARG USERNAME=cpp
-ARG USER_UID=1000
+ARG USERNAME="dev"
+ENV USERNAME=$USERNAME
+ENV USER=$USERNAME
+
+ARG USER_UID=1001
 ARG USER_GID=$USER_UID
 
 # Create a non-root user
@@ -58,8 +60,7 @@ RUN groupadd --gid $USER_GID $USERNAME \
   && chmod 0440 /etc/sudoers.d/$USERNAME \
   # Cleanup
   && rm -rf /var/lib/apt/lists/* \
-  && echo "source /usr/share/bash-completion/completions/git" >> /home/$USERNAME/.bashrc \
-  && echo "if [ -f /opt/ros/${ROS_DISTRO}/setup.bash ]; then source /opt/ros/${ROS_DISTRO}/setup.bash; fi" >> /home/$USERNAME/.bashrc
+  && echo "source /usr/share/bash-completion/completions/git" >> /home/$USERNAME/.bashrc
 
 # Set user to non-root user
 USER $USERNAME
@@ -67,16 +68,14 @@ USER $USERNAME
 # Create a development directory
 RUN mkdir -p ~/Dev
 
-# Install latest stable eigen release
-RUN git config --global http.sslverify false \
-    && git clone https://gitlab.com/libeigen/eigen.git ~/Dev/external/eigen \
-    && cd ~/Dev/external/eigen \
-    && mkdir build && cd build \
-    && cmake .. \
-    && sudo make install \
-    && git config --global http.sslverify false 
-
-ENV DEBIAN_FRONTEND=
+## Install latest stable eigen release
+#RUN git config --global http.sslverify false \
+#    && git clone https://gitlab.com/libeigen/eigen.git ~/Dev/external/eigen \
+#    && cd ~/Dev/external/eigen \
+#    && mkdir build && cd build \
+#    && cmake .. \
+#    && sudo make install \
+#    && git config --global http.sslverify false 
 
 ###########################################
 #  Develop image 
@@ -87,7 +86,6 @@ ARG USERNAME
 ARG USER_UID
 ARG USER_GID
 
-ENV DEBIAN_FRONTEND=noninteractive
 RUN sudo apt-get update \
   && sudo apt-get install -y --no-install-recommends \
   clangd \
@@ -99,6 +97,8 @@ RUN sudo apt-get update \
   vim \
   wget \
   python3-pip \
+  curl \
+  ca-certificates \
   && sudo rm -rf /var/lib/apt/lists/* 
 
 # Install fzf
@@ -106,30 +106,11 @@ RUN git clone https://github.com/junegunn/fzf.git ~/Dev/external/fzf \
       && cd ~/Dev/external/fzf \
       && ./install --all
 
-# Clone custom workstation setup and setup packages
-RUN git clone https://github.com/aalbaali/workstation_setup.git ~/Dev/workstation_setup \
-      && cd ~/Dev/workstation_setup \
-      && sudo ./scripts/install_packages.sh \
-      && rm ~/.bashrc \
-      && rm ~/.zshrc \
-      && if [ -f ~/.gitconfig ]; then rm ~/.gitconfig; fi \
-      && ./scripts/post_install_setup.sh \
-          --zsh \
-          --zsh-setup \
-          --bash \
-          --functions \
-          --git \
-          --nvim \
-          --nvim-setup \
-          --clang_format \
-          --gdb \
-          --tmux \
-          --tmux-setup
+# Install my workstation setup
+RUN curl -sS https://raw.githubusercontent.com/aalbaali/workstation_setup/master/clone_and_run_dev_playbook | bash -
 
 # Run zsh to initialize
 USER $USERNAME
-
-ENV DEBIAN_FRONTEND=
 
 CMD ["zsh"]
 
@@ -142,8 +123,6 @@ ARG USERNAME
 ARG USER_UID
 ARG USER_GID
 
-ENV DEBIAN_FRONTEND=noninteractive
-
 RUN sudo apt-get update \
   && sudo apt-get install -y \
     libopencv-dev \
@@ -152,6 +131,4 @@ RUN sudo apt-get update \
     libcanberra-gtk3-module \
   && sudo rm -rf /var/lib/apt/lists/* 
 
-ENV DEBIAN_FRONTEND=
-
-CMD ["zsh"]
+CMD zsh
