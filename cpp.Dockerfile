@@ -68,14 +68,15 @@ USER $USERNAME
 # Create a development directory
 RUN mkdir -p ~/Dev
 
-## Install latest stable eigen release
-#RUN git config --global http.sslverify false \
-#    && git clone https://gitlab.com/libeigen/eigen.git ~/Dev/external/eigen \
-#    && cd ~/Dev/external/eigen \
-#    && mkdir build && cd build \
-#    && cmake .. \
-#    && sudo make install \
-#    && git config --global http.sslverify false 
+# Install latest stable eigen release
+ARG EIGEN_VERSION=3.4.0
+RUN git config --global http.sslverify false \
+    && git clone https://gitlab.com/libeigen/eigen.git -b $EIGEN_VERSION ~/Dev/external/eigen \
+    && cd ~/Dev/external/eigen \
+    && mkdir build && cd build \
+    && cmake .. \
+    && sudo make install \
+    && git config --global http.sslverify false 
 
 ###########################################
 #  Develop image 
