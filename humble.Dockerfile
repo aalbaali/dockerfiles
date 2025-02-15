@@ -133,32 +133,9 @@ RUN git config --global http.sslverify false \
     && sudo make install \
     && git config --global http.sslverify false 
 
-# Install fzf
-RUN git clone https://github.com/junegunn/fzf.git ~/Dev/external/fzf \
-      && cd ~/Dev/external/fzf \
-      && ./install --all
-
-# Clone custom workstation setup and setup packages
-RUN git clone https://github.com/aalbaali/workstation_setup.git ~/Dev/workstation_setup -b nvchad
-RUN cd ~/Dev/workstation_setup \
-      && sudo ./scripts/install_packages.sh
-RUN cd ~/Dev/workstation_setup \
-      && rm -f ~/.bashrc ~/.zshrc ~/.gitconfig \
-      && bash ./scripts/post_install_setup.sh \
-          --zsh \
-          --zsh-setup \
-          --bash \
-          --functions \
-          --git \
-          --nvim \
-          --nvim-setup \
-          --clang_format \
-          --gdb \
-          --tmux \
-          --tmux-setup
-
-# Add ROS sourcing to zshrc
-RUN echo "if [ -f /opt/ros/${ROS_DISTRO}/setup.zsh ]; then source /opt/ros/${ROS_DISTRO}/setup.zsh; fi" >> /home/$USERNAME/.zshrc
+RUN sudo apt-get update && \
+    sudo apt-get install -y curl ca-certificates git && \
+    curl -sS https://raw.githubusercontent.com/aalbaali/workstation_setup/master/clone_and_run_dev_playbook | bash -
 
 ENV DEBIAN_FRONTEND=
 ENV AMENT_CPPCHECK_ALLOW_SLOW_VERSIONS=1
